@@ -1,3 +1,3 @@
 #pragma once
 
-double** matrixMultiplication();
+void runCalculator();

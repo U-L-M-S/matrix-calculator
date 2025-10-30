@@ -1,469 +1,301 @@
-﻿#include <iostream>
+#include "main.h"
+
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <stdexcept>
 #include <string>
-#include <math.h>
-#include <windows.h>
+#include <vector>
 
+namespace {
 
+struct Matrix {
+    std::size_t rows{};
+    std::size_t cols{};
+    std::vector<double> elements{};
 
+    Matrix() = default;
+    Matrix(std::size_t r, std::size_t c) : rows(r), cols(c), elements(r * c, 0.0) {}
 
+    double& at(std::size_t row, std::size_t col) {
+        return elements[row * cols + col];
+    }
 
-using namespace std;
+    double at(std::size_t row, std::size_t col) const {
+        return elements[row * cols + col];
+    }
+};
 
-
-void matrixMultiplicationInstructions() {
-
-	cout << "The multiplication of two matrices is only possible if the matrice A row quantity and the matrice B coloumn quantity are the same." << endl;
-	cout << "Ex:" << endl;
-
-	float fRowsMatrixA = 2, fColumnsMatrixA = 3;
-	int iAMatrixEX[] = { 1, 2, 3 };
-	int iBMatrixEX[] = { 4, 5, 6 };
-	int* iMatrixEX[] = { iAMatrixEX, iBMatrixEX };
-
-	for (int i = 0; i < fRowsMatrixA; i++)
-	{
-		for (int j = 0; j < fColumnsMatrixA; j++) {
-			cout << iMatrixEX[i][j] << "  ";
-		}
-		cout << endl;
-	}
-
-	cout << endl << endl;
-	cout << "This is a " << fRowsMatrixA << " x [" << fColumnsMatrixA << "] matrice." << endl << endl;
-
-	int iRowsMatrixB = 3, iColumnsMatrixB = 3;
-	int iAMatrixBEX[] = { 6, 5, 4 };
-	int iBMatrixBEX[] = { 1, 2, 3 };
-	int iCMatrixBEX[] = { 2, 4, 6 };
-	int* iMatrixBEX[] = { iAMatrixBEX, iBMatrixBEX };
-
-	for (int i = 0; i < iRowsMatrixB; i++)
-	{
-		for (int j = 0; j < iColumnsMatrixB; j++) {
-			cout << iMatrixBEX[i][j] << "  ";
-		}
-		cout << endl;
-	}
-
-	cout << endl << endl;
-	cout << "This is a [" << iRowsMatrixB << "] x " << iColumnsMatrixB << " matrice." << endl << endl << endl;
-	cout << "As you can see. The matrices A (2x[3]) and B ([3]x3)" << "can be multiplificated." << endl;
-	cout << "Press ENTER to continue you multiplifications of matrices." << endl;
-	cin.get();
-
+void resetInputStream() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void matrixSumInstructions() {
-	cout << "The sum of two matrices is only possible if they have the same quantity of rows and columns." << "EX:";
-
-	float fRowsMatrixA = 3, fColumnsMatrixA = 3;
-	int iAMatrixEX[] = { 1, 2, 3 };
-	int iBMatrixEX[] = { 4, 5, 6 };
-	int iCMatrixEX[] = { 7, 8, 9 };
-	int* iMatrixEX[] = { iAMatrixEX, iBMatrixEX, iCMatrixEX };
-
-	for (int i = 0; i < fRowsMatrixA; i++)
-	{
-		for (int j = 0; j < fColumnsMatrixA; j++) {
-			cout << iMatrixEX[i][j] << "  ";
-		}
-		cout << endl;
-	}
-
-	cout << endl << endl;
-	cout << "This is a " << fRowsMatrixA << " x [" << fColumnsMatrixA << "] matrice." << endl << endl;
-
-	int iRowsMatrixB = 3, iColumnsMatrixB = 3;
-	int iAMatrixBEX[] = { 6, 5, 4 };
-	int iBMatrixBEX[] = { 1, 2, 3 };
-	int iCMatrixBEX[] = { 2, 4, 6 };
-	int* iMatrixBEX[] = { iAMatrixBEX, iBMatrixBEX, iCMatrixBEX };
-
-	for (int i = 0; i < iRowsMatrixB; i++)
-	{
-		for (int j = 0; j < iColumnsMatrixB; j++) {
-			cout << iMatrixBEX[i][j] << "  ";
-		}
-		cout << endl;
-	}
-
-	cout << endl << endl;
-	cout << "This is a [" << iRowsMatrixB << "] x " << iColumnsMatrixB << " matrice." << endl << endl << endl;
-	cout << "As you can see. The matrices A ([3]x[3]) and B ([3]x[3])" << "can be multiplificated." << endl;
-	cout << "Press ENTER to continue you multiplifications of matrices." << endl;
-	
+std::size_t promptPositiveSize(const std::string& prompt) {
+    std::size_t value{};
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value && value > 0) {
+            return value;
+        }
+        std::cout << "Please enter a positive integer.\n";
+        resetInputStream();
+    }
 }
 
-void matrixMultiplication() {
-
-		char cInstructions;
-		cout << "Do you want to see the instructions for a multiplications of matrices? (y/n)" << endl;
-
-		cin >> cInstructions;
-		if (cInstructions == 'y' || cInstructions == 'Y')
-		{
-			matrixMultiplicationInstructions();
-		}
-
-		char cMatrixCorrection;
-
-		double dMatrixA[15][15], dMatrixB[15][15], dMultMatrixAB[15][15];
-		int iRowsMatrixA, iColumnMatrixA, iRowsMatrixB, iColumnMatrixB, iTempMultMatrixAB;
-
-
-		cout << "Put down  the nescessary valuers..." << endl;
-		cout << "Put here how many rows there is in the first matrix (Matrix A):  ";
-		cin >> iRowsMatrixA;
-		cout << endl;
-		cout << "Put here how many columns there is in the matrix A:  ";
-		cin >> iColumnMatrixA;
-		cout << endl << endl;
-		cout << "Put here all numbers of Matrice A" << endl << "Ex: " << endl;
-		cout << "1 2 3	 [ENTER]" << endl;
-		cout << "4 5 6	 [ENTER]" << endl;
-		cout << "7 8 9	 [ENTER]" << endl << endl << endl;
-		cout << "Now it's your turn: " << endl;
-
-		for (int i = 0; i < iRowsMatrixA; i++)
-		{
-			for (int j = 0; j < iColumnMatrixA; j++) {
-				cin >> dMatrixA[i][j];
-			}
-		}
-
-		cout << endl << endl;
-		
-
-
-
-		cout << "Put here how many rows there is in the secound matrix (Matrix B):  ";
-		cin >> iRowsMatrixB;
-		cout << endl;
-		cout << "Put here how many columns there is in the matrix B:  ";
-		cin >> iColumnMatrixB;
-		cout << endl << endl;
-
-		for (int i = 0; i < iRowsMatrixB; i++)
-		{
-			for (int j = 0; j < iColumnMatrixB; j++) {
-				cin >> dMatrixB[i][j];
-			}
-		}
-
-
-
-		int count = 0;
-		cout << "Please wait..." << endl << "Loading [ ";
-		for (count; count < 10; ++count) {
-			cout << " - ";
-			fflush(stdout);
-			Sleep(500);
-		}
-		cout<< ">]" << endl << "Done" << endl;
-
-
-		cout << endl << endl;
-		cout << "Your matrices look like this" << endl;
-
-
-		cout << "Your matrice looks like this" << endl;
-		cout << "Matrix A" << endl;
-		for (int i = 0; i < iRowsMatrixA; i++)
-		{
-			for (int j = 0; j < iColumnMatrixA; j++) {
-				cout << "[ " << dMatrixA[i][j] << " ] ";
-			}
-			cout << endl;
-		}
-
-		cout << endl << endl << endl << "MatrixB" << endl;
-
-
-		for (int i = 0; i < iRowsMatrixB; i++)
-		{	
-			for (int j = 0; j < iColumnMatrixB; j++)
-			{
-				cout << "[ " << dMatrixB[i][j] << " ] ";
-			}
-			cout << endl;
-		}
-
-
-		cout << endl;
-		cout << "Does your matrices look like you wanted ?";
-		cout << endl;
-		cout << "(y/n)?";
-		cin >> cMatrixCorrection;
-		if (cMatrixCorrection == 'y' || cMatrixCorrection == 'Y')
-		{
-			cout << "PERFECT :D. let's continue..." << endl << "Press ENTER to continue";
-		}
-		if (cMatrixCorrection == 'n' || cMatrixCorrection == 'N')
-		{
-
-			int iMatriceCorection;
-			cout << "ok... Which one ?"<< endl;
-			cout << "press 1 for Matrice A" << endl;
-			cout << "press 2 for Matrice B" << endl;
-			cout << "press 3 for both Matrices" << endl;
-			cin >> iMatriceCorection;
-			switch (iMatriceCorection)
-			{
-			case 1:
-				cout << "Alright... let's we try again. " << endl << "[ENTER TO CONTINUE]";
-				cin.get();
-				cout << "Put here how many rows there is in the first matrix (Matrix A):  ";
-				cin >> iRowsMatrixA;
-				cout << endl;
-				cout << "Put here how many columns there is in the matrix A:  ";
-				cin >> iColumnMatrixA;
-				cout << endl << endl;
-				cout << "Put here all numbers of Matrice A" << endl << "Ex: " << endl;
-				cout << "1 2 3	 [ENTER]" << endl;
-				cout << "4 5 6	 [ENTER]" << endl;
-				cout << "7 8 9	 [ENTER]" << endl << endl << endl;
-				cout << "Now it's your turn: " << endl;
-
-				for (int i = 0; i < iRowsMatrixA; i++)
-				{
-					for (int j = 0; j < iColumnMatrixA; j++) {
-						cin >> dMatrixA[i][j];
-					}
-				}
-
-				cout << endl << endl;
-				cout << "Your matrice looks like this" << endl;
-				for (int i = 0; i < iRowsMatrixA; i++)
-				{
-					for (int j = 0; j < iColumnMatrixA; j++) {
-						cout << "[ " << dMatrixA[i][j] << " ] ";
-					}
-					cout << endl;
-				}
-
-				break;
-			
-			case 2:
-
-				cout << "Alright... let's we try again. " << endl << "[ENTER TO CONTINUE]";
-				cin.get();
-				cout << "Put here how many rows there is in the secound matrix (Matrix B):  ";
-				cin >> iRowsMatrixB;
-				cout << endl;
-				cout << "Put here how many columns there is in the matrix B:  ";
-				cin >> iColumnMatrixB;
-				cout << endl << endl;
-
-				for (int i = 0; i < iRowsMatrixB; i++)
-				{
-					for (int j = 0; j < iColumnMatrixB; j++) {
-						cin >> dMatrixB[i][j];
-					}
-				}
-
-				cout << endl << endl;
-				cout << "Your matrice looks like this" << endl;
-				for (int i = 0; i < iRowsMatrixB; i++)
-				{
-					for (int j = 0; j < iColumnMatrixB; j++)
-					{
-						cout << "[ " << dMatrixB[i][j] << " ] ";
-					}
-					cout << endl;
-				}
-
-				break;
-
-			case 3:
-
-				matrixMultiplication();
-
-				break;
-			default:
-
-				cout << "Sorry I couldn't understand what you mean... So let's we try for the beginning. ok? " << endl << "[ENTER TO CONTINUE]";
-				cin.get();
-				matrixMultiplication();
-
-				break;
-			}
-
-		}
-
-		cout << endl << endl;
-		if (iColumnMatrixA != iRowsMatrixB)
-		{
-
-			cout << "I'm sorry but this matrices can't be multiplicated" << endl << "I sugest you to read the Instructions..." << endl << "[ENTER TO CONTINUE]";
-			cin.get();
-			matrixMultiplication();
-
-		}
-		else
-		{
-			for (int i = 0; i < iRowsMatrixA; i++)
-			{
-				for (int j = 0; j < iRowsMatrixB; j++)
-				{
-					for (int k = 0; k < iRowsMatrixB; k++)
-					{
-						iTempMultMatrixAB += dMatrixA[i][k] * dMatrixB[k][j];
-					}
-					dMultMatrixAB[i][j] = iTempMultMatrixAB;
-					iTempMultMatrixAB = 0;
-				}
-			}
-		}
-	
-	
-	
+double promptNumber(const std::string& prompt) {
+    double value{};
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value) {
+            return value;
+        }
+        std::cout << "Please enter a valid number.\n";
+        resetInputStream();
+    }
 }
 
-void matrixSum() {
-
-	int iRowsMatrix, iColumnsMatrix;
-	double dMatrixA[15][15], dMatrixB[15][15];
-
-	cout << "Do you want to see the instructions for addition of matrices first?" << "(y/n)";
-	char cInstructions; 	
-	cin >> cInstructions;
-	if (cInstructions == 'y' || cInstructions == 'Y')
-	{
-		matrixSumInstructions();
-		cin.get();
-	}
-	if (cInstructions == 'n' || cInstructions == 'N')
-	{
-		cout << "ok. No instructions..." << endl << "Press ENTER to continue";
-		cin.get();
-	}
-	else
-	{
-		cout << "Ups... something is wrong. Try to put y OR n";
-		matrixSum();
-	}
-
-
-	cout << "Now put the valuer for the rows:  ";
-	cin >> iRowsMatrix;
-	cout << "Now put the valuer for the columns:  ";
-	cin >> iColumnsMatrix;
-
-	cout << "Now put the valuers for the first matrix (Matrix A)" << endl;
-	for (int i = 0; i < iRowsMatrix; i++)
-	{
-
-		for (int j = 0; j < iColumnsMatrix; j++)
-		{
-			cin >> dMatrixA[i][j];
-		}
-		cout << endl;
-	}
-	cout << endl;
-	
-	cout << "Now put the valuers for the secound matrix (Matrix B)" << endl;
-	for (int i = 0; i < iRowsMatrix; i++)
-	{
-
-		for (int j = 0; j < iColumnsMatrix; j++)
-		{
-			cin >> dMatrixB[i][j];
-		}
-		cout << endl;
-	}
-
-	cout << endl;
-
-	cout << "Do your matrixes look like this ?" << endl;
-
-	for (int i = 0; i < iRowsMatrix; i++)
-	{
-
-		for (int j = 0; j < iColumnsMatrix; j++)
-		{
-			cout << dMatrixA[i][j];
-		}
-		cout << "\t + \t";
-		for (int j = 0; j < iColumnsMatrix; j++)
-		{
-			cout <<" [ " << dMatrixB[i][j] << " ] ";
-		}
-		cout << endl;
-		cout << endl;
-	}
-
-	
+int promptMenuChoice(int min, int max) {
+    int value{};
+    while (true) {
+        std::cout << "Choice: ";
+        if (std::cin >> value && value >= min && value <= max) {
+            return value;
+        }
+        std::cout << "Please enter a number between " << min << " and " << max << ".\n";
+        resetInputStream();
+    }
 }
 
-void matrixSubtraction() {
-
+bool askYesNo(const std::string& prompt) {
+    std::string answer;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> answer) {
+            if (answer == "y" || answer == "Y" || answer == "yes" || answer == "YES") {
+                return true;
+            }
+            if (answer == "n" || answer == "N" || answer == "no" || answer == "NO") {
+                return false;
+            }
+        }
+        std::cout << "Please respond with y/n.\n";
+        resetInputStream();
+    }
 }
 
-
-
-void instructions() {
-
-	cout << " A matrix is made of two valuers..." << endl << endl;
-	cout << "Rows --->" << endl;
-	cout << "Columns |" << endl;
-	cout << "        |" << endl;
-	cout << "        |" << endl;
-	cout << "       \\/" << endl << endl << endl;
-
+Matrix readMatrix(const std::string& name, std::size_t rows, std::size_t cols) {
+    Matrix matrix(rows, cols);
+    for (std::size_t row = 0; row < rows; ++row) {
+        for (std::size_t col = 0; col < cols; ++col) {
+            const std::string prompt =
+                name + "[" + std::to_string(row + 1) + "," + std::to_string(col + 1) + "]: ";
+            matrix.at(row, col) = promptNumber(prompt);
+        }
+    }
+    return matrix;
 }
 
-int main(int arg, char* argv[]) {
+void printMatrix(const Matrix& matrix, const std::string& title) {
+    if (!title.empty()) {
+        std::cout << title << '\n';
+    }
+    std::cout << std::fixed << std::setprecision(2);
+    for (std::size_t row = 0; row < matrix.rows; ++row) {
+        for (std::size_t col = 0; col < matrix.cols; ++col) {
+            std::cout << std::setw(10) << matrix.at(row, col);
+        }
+        std::cout << '\n';
+    }
+    std::cout << std::defaultfloat;
+}
 
+Matrix addMatrices(const Matrix& lhs, const Matrix& rhs) {
+    if (lhs.rows != rhs.rows || lhs.cols != rhs.cols) {
+        throw std::invalid_argument("Matrices must share dimensions for addition.");
+    }
+    Matrix result(lhs.rows, lhs.cols);
+    for (std::size_t row = 0; row < lhs.rows; ++row) {
+        for (std::size_t col = 0; col < lhs.cols; ++col) {
+            result.at(row, col) = lhs.at(row, col) + rhs.at(row, col);
+        }
+    }
+    return result;
+}
 
+Matrix subtractMatrices(const Matrix& lhs, const Matrix& rhs) {
+    if (lhs.rows != rhs.rows || lhs.cols != rhs.cols) {
+        throw std::invalid_argument("Matrices must share dimensions for subtraction.");
+    }
+    Matrix result(lhs.rows, lhs.cols);
+    for (std::size_t row = 0; row < lhs.rows; ++row) {
+        for (std::size_t col = 0; col < lhs.cols; ++col) {
+            result.at(row, col) = lhs.at(row, col) - rhs.at(row, col);
+        }
+    }
+    return result;
+}
 
-	float fMatrixOperation;
-	char cInstructions;
-	cout << "Do you want to see the instructions ? (y/n)";
-	cin >> cInstructions;
+Matrix multiplyMatrices(const Matrix& lhs, const Matrix& rhs) {
+    if (lhs.cols != rhs.rows) {
+        throw std::invalid_argument("Columns of Matrix A must equal rows of Matrix B for multiplication.");
+    }
+    Matrix result(lhs.rows, rhs.cols);
+    for (std::size_t row = 0; row < lhs.rows; ++row) {
+        for (std::size_t col = 0; col < rhs.cols; ++col) {
+            double sum = 0.0;
+            for (std::size_t k = 0; k < lhs.cols; ++k) {
+                sum += lhs.at(row, k) * rhs.at(k, col);
+            }
+            result.at(row, col) = sum;
+        }
+    }
+    return result;
+}
 
-	if (cInstructions == 'y' || cInstructions == 'Y')
-	{
-		instructions();
-		cin.get();
-	}
-	
-	if (cInstructions == 'n' || cInstructions == 'N')
-	{
-		cout << "ok. No instructions..." << endl << "Press ENTER to continue";
-		cin.get();
-	}
+void showMultiplicationInstructions() {
+    std::cout << "\nMatrix multiplication is defined when columns of Matrix A equal rows of Matrix B.\n"
+              << "Example: A is 2x3 and B is 3x4. Result will be 2x4.\n\n";
+}
 
+void showAdditionInstructions() {
+    std::cout << "\nMatrix addition requires both matrices to have identical dimensions.\n"
+              << "Example: A and B are both 3x3. Result will also be 3x3.\n\n";
+}
 
+void showSubtractionInstructions() {
+    std::cout << "\nMatrix subtraction shares the same dimension requirements as addition.\n"
+              << "Example: A and B must both be 2x2 to compute A - B.\n\n";
+}
 
-	cout << "Please select the option you want to do..." << endl;
-	cout << "(1) for Multiplication of matrices" << endl;
-	cout << "(2) for sum of matrices" << endl;
-	cout << "(3) for subtraction of matrices" << endl << endl;
-	cin >> fMatrixOperation;
+void runMultiplicationFlow() {
+    if (askYesNo("Show multiplication instructions? (y/n): ")) {
+        showMultiplicationInstructions();
+    }
 
+    const std::size_t rowsA = promptPositiveSize("Rows for Matrix A: ");
+    const std::size_t colsA = promptPositiveSize("Columns for Matrix A: ");
+    const std::size_t rowsB = promptPositiveSize("Rows for Matrix B: ");
+    const std::size_t colsB = promptPositiveSize("Columns for Matrix B: ");
 
+    if (colsA != rowsB) {
+        std::cout << "Cannot multiply: columns of Matrix A must equal rows of Matrix B.\n";
+        return;
+    }
 
-	if (fMatrixOperation == 1)
-	{
-		cout << "matrixMultiplication";
-		//matrixMultiplication();
-	}
-	if (fMatrixOperation == 2)
-	{
-		cout << "matrixSum";
-		//matrixSum();
-	}
-	if (fMatrixOperation == 3)
-	{
-		cout << "matrixSubtraction";
-		//matrixSubtraction();
-	}
-	else
-	{
-		"Ups... something wrong! please restart the program and select a option between 1 and 3";
-		exit(4);
-	}
+    std::cout << "\nEnter values for Matrix A:\n";
+    Matrix matrixA = readMatrix("A", rowsA, colsA);
 
+    std::cout << "\nEnter values for Matrix B:\n";
+    Matrix matrixB = readMatrix("B", rowsB, colsB);
 
-	return 0;
+    std::cout << "\nMatrix A:\n";
+    printMatrix(matrixA, "");
+
+    std::cout << "\nMatrix B:\n";
+    printMatrix(matrixB, "");
+
+    try {
+        Matrix result = multiplyMatrices(matrixA, matrixB);
+        std::cout << "\nA x B:\n";
+        printMatrix(result, "");
+    } catch (const std::invalid_argument& error) {
+        std::cout << "Error: " << error.what() << '\n';
+    }
+}
+
+void runAdditionFlow() {
+    if (askYesNo("Show addition instructions? (y/n): ")) {
+        showAdditionInstructions();
+    }
+
+    const std::size_t rows = promptPositiveSize("Rows for matrices A and B: ");
+    const std::size_t cols = promptPositiveSize("Columns for matrices A and B: ");
+
+    std::cout << "\nEnter values for Matrix A:\n";
+    Matrix matrixA = readMatrix("A", rows, cols);
+
+    std::cout << "\nEnter values for Matrix B:\n";
+    Matrix matrixB = readMatrix("B", rows, cols);
+
+    std::cout << "\nMatrix A:\n";
+    printMatrix(matrixA, "");
+
+    std::cout << "\nMatrix B:\n";
+    printMatrix(matrixB, "");
+
+    try {
+        Matrix result = addMatrices(matrixA, matrixB);
+        std::cout << "\nA + B:\n";
+        printMatrix(result, "");
+    } catch (const std::invalid_argument& error) {
+        std::cout << "Error: " << error.what() << '\n';
+    }
+}
+
+void runSubtractionFlow() {
+    if (askYesNo("Show subtraction instructions? (y/n): ")) {
+        showSubtractionInstructions();
+    }
+
+    const std::size_t rows = promptPositiveSize("Rows for matrices A and B: ");
+    const std::size_t cols = promptPositiveSize("Columns for matrices A and B: ");
+
+    std::cout << "\nEnter values for Matrix A:\n";
+    Matrix matrixA = readMatrix("A", rows, cols);
+
+    std::cout << "\nEnter values for Matrix B:\n";
+    Matrix matrixB = readMatrix("B", rows, cols);
+
+    std::cout << "\nMatrix A:\n";
+    printMatrix(matrixA, "");
+
+    std::cout << "\nMatrix B:\n";
+    printMatrix(matrixB, "");
+
+    try {
+        Matrix result = subtractMatrices(matrixA, matrixB);
+        std::cout << "\nA - B:\n";
+        printMatrix(result, "");
+    } catch (const std::invalid_argument& error) {
+        std::cout << "Error: " << error.what() << '\n';
+    }
+}
+
+}  // namespace
+
+void runCalculator() {
+    std::cout << "=== Matrix Calculator ===\n";
+    bool running = true;
+    while (running) {
+        std::cout << "\nSelect an operation:\n"
+                  << "1) Multiply matrices\n"
+                  << "2) Add matrices\n"
+                  << "3) Subtract matrices\n"
+                  << "4) Exit\n";
+
+        const int choice = promptMenuChoice(1, 4);
+
+        switch (choice) {
+            case 1:
+                runMultiplicationFlow();
+                break;
+            case 2:
+                runAdditionFlow();
+                break;
+            case 3:
+                runSubtractionFlow();
+                break;
+            case 4:
+            default:
+                running = false;
+                std::cout << "Goodbye!\n";
+                break;
+        }
+    }
+}
+
+int main() {
+    runCalculator();
+    return 0;
 }
